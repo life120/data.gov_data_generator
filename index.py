@@ -8,20 +8,32 @@ import requests
 url = 'https://api.data.gov.sg/v1/environment/wind-direction?date=2020-10-10'
 url2 = 'https://api.data.gov.sg/v1/environment/wind-direction?date_time=2020-10-10T20%3A00%3A00&date=2020-10-10'
 
-data = requests.get(url).json()
+data = requests.get(url2).json()
 # df = pd.DataFrame.from_dict(data)
-# print(data)
-# print(data['items'][0].get('readings'))
-list1 = data['items'][0]
-list2 = data['items'][1]
-# for item in list1:
-#     if item.get('station_id')== 'S109':
-#         print(item.get('value'))
-#         print('\n')
-#added a new line
-# print(list1.get('timestamp'))
-# print(list2.get('timestamp'))
-for item in data['metadata']['stations']:
-    print('ID is ' + str(item['id']) + '. It is located at ' + item['name'])
+
+# list1 = data['items'][0]
+# list2 = data['items'][1]
+
+##This prints out the number of headers in the json file
+# for item in data:
+#     print(item)
+
+##this finds out the ID and name of each station
+# for item in data['metadata']['stations']:
+#     print('ID is ' + str(item['id']) + '. It is located at ' + item['name'])
+
+##This finds the timestamp inside 'item'
+# for item in data['items']:
+#     print('Date: ' + item['timestamp'])
+
+# {} is a dictionary
+# [] is a list
+
+##This finds the value from each item
+items = data['items']
+readings = items[0]['readings']
+
+for item in readings:
+    print(item['station_id'] + ' ' + str(item['value']))
 
 print("Completed")
