@@ -10,11 +10,12 @@ url2 = 'https://api.data.gov.sg/v1/environment/wind-direction?date_time=2020-10-
 
 data = requests.get(url).json()
 # df = pd.DataFrame.from_dict(data)
-print(data)
-print(data['items'][0].get('readings'))
+# print(data)
+# print(data['items'][0].get('readings'))
 list1 = data['items'][0].get('readings')
 for item in list1:
     if item.get('station_id')== 'S109':
         print(item.get('value'))
+        print('\n')
 #added a new line
 print("Completed")
