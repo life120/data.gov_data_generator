@@ -16,5 +16,5 @@ list1 = data['items'][0].get('readings')
 for item in list1:
     if item.get('station_id')== 'S109':
         print(item.get('value'))
-
+#added a new line
 print("Completed")
