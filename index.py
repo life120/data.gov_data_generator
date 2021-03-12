@@ -4,7 +4,7 @@ import json as json
 import urllib3 as urllib3
 import requests
 
-##code for NEA weather code
+##code for NEA weather code duh
 url = 'https://api.data.gov.sg/v1/environment/wind-direction?date=2020-10-10'
 url2 = 'https://api.data.gov.sg/v1/environment/wind-direction?date_time=2020-10-10T20%3A00%3A00&date=2020-10-10'
 
