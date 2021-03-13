@@ -5,85 +5,61 @@ import urllib3 as urllib3
 import requests
 
 ##code for NEA weather code
-url = 'https://api.data.gov.sg/v1/environment/wind-direction?date=2020-10-10'
+# url = 'https://api.data.gov.sg/v1/environment/wind-direction?date=2020-10-10'
+url = 'https://api.data.gov.sg/v1/environment/wind-direction?date='
 url2 = 'https://api.data.gov.sg/v1/environment/wind-direction?date_time=2020-10-10T20%3A00%3A00&date=2020-10-10'
 
-data = requests.get(url).json()
+# data = requests.get(url).json()
 
 ##This prints out the number of headers in the json file
 # for item in data:
 #     print(item)
 
 ##this finds out the ID and name of each station
-for item in data['metadata']['stations']:
-    print('ID is ' + str(item['id']) + '. It is located at ' + item['name'])
-
-# ID is S109. It is located at Ang Mo Kio Avenue 5
-# ID is S117. It is located at Banyan Road
-# ID is S107. It is located at East Coast Parkway
-# ID is S43. It is located at Kim Chuan Road
-# ID is S108. It is located at Marina Gardens Drive
-# ID is S44. It is located at Nanyang Avenue
-# ID is S106. It is located at Pulau Ubin
-# ID is S60. It is located at Sentosa
-# ID is S115. It is located at Tuas South Avenue 3
-# ID is S24. It is located at Upper Changi Road North
-# ID is S116. It is located at West Coast Highway
-# ID is S104. It is located at Woodlands Avenue 9
-# ID is S100. It is located at Woodlands Road
-# ID is S50. It is located at Clementi Road
+# for item in data['metadata']['stations']:
+#     print('ID is ' + str(item['id']) + '. It is located at ' + item['name'])
 
 ##Prints out the time stamp and the data from station_id input
 count = 0
 station_value = ""
 station_id = ""
-station_id = input('Please indicate the station ID No: ')
-for item in data['items']:
-    timeStamp = item['timestamp']
-    readings = item['readings']
-    for item in readings:
-        if item['station_id'] == station_id:
-            station_value = str(item['value'])
-    if station_value == "":
-        station_value = 0
-        count = count + 1
-    print("At {}, readings at {} = {}".format(timeStamp, station_id, station_value))
-print('There are {} empty slots for the day.'.format(str(count)))    
+date = ""
+first_timestamp = "YYYY-MM-DDT00:00:00+08:00"
+last_timestamp = "23:59:00"
+date = input("Please indicate the date that you want to draw the wind direction data from(YYYY-MM-DD): ")
+url = url + date
 
-##Prints out the time stamp and the data from station_id S109
-# for item in data['items']:
-#     timeStamp = item['timestamp']
-#     readings = item['readings']
-#     for item in readings:
-#         if item['station_id'] == 'S109':
-#             S109Value = str(item['value'])
-#         elif item['station_id'] == 'S117':
-#             S117Value = str(item['value'])
-#         elif item['station_id'] == 'S107':
-#             S107Value = str(item['value'])
-#         elif item['station_id'] == 'S107':
-#             S107 = str(item['value'])
-#         elif item['station_id'] == 'S43':
-#             S43 = str(item['value'])
-#         elif item['station_id'] == 'S108':
-#             S108 = str(item['value'])
-#         elif item['station_id'] == 'S44':
-#             S44 = str(item['value'])
-#         elif item['station_id'] == 'S106':
-#             S106 = str(item['value'])
-#         elif item['station_id'] == 'S60':
-#             S60 = str(item['value'])
-#         elif item['station_id'] == 'S115':
-#             S115 = str(item['value'])
-#         elif item['station_id'] == 'S24':
-#             S24 = str(item['value'])
-#         elif item['station_id'] == 'S104':
-#             S104 = str(item['value'])
-#         elif item['station_id'] == 'S100':
-#             S100 = str(item['value'])
-#         elif item['station_id'] == 'S50':
-#             S50 = str(item['value'])
-        
-#         print("At {}, readings at S109 = {}".format(timeStamp, S109Value))
+data = requests.get(url).json()
+for item in data['metadata']['stations']:
+    print('ID is ' + str(item['id']) + '. It is located at ' + item['name'])
+
+station_id = input('Please indicate the station ID No: ')
+fileName = str(date) + '_'+ station_id +'.txt'
+previous_timestamp = first_timestamp
+timeStampCount = 0
+timeStampNoCount = 0
+with open(fileName,'w') as myFile:
+    for item in data['items']:
+        timeStamp = item['timestamp']
+        timeDiff = int(timeStamp[14:16]) - int(previous_timestamp[14:16]) 
+        if  timeDiff != 1 or timeDiff != -59:
+            if timeDiff > 0:
+                timeStampNoCount = timeStampNoCount + timeDiff
+            else:
+                timeStampNoCount = timeStampNoCount + (60 - abs(timeDiff))
+        readings = item['readings']
+        for item in readings:
+            if item['station_id'] == station_id:
+                station_value = str(item['value'])
+        if station_value == "":
+            station_value = 0
+            count = count + 1
+        # print("At {}, readings at {} = {}".format(timeStamp, station_id, station_value))
+        myFile.write("At {}, readings at {} = {}\n".format(timeStamp, station_id, station_value))
+        previous_timestamp = timeStamp
+        timeStampCount = timeStampCount + 1
+    # print('There are {} empty slots for the day.'.format(str(count))) 
+    myFile.write('There are {} empty slots for the day.\nThere are {} lines.\nThere are {} missing lines'.format(str(count), str(timeStampCount), str(timeStampNoCount)))  
+
 
 print("Completed")
