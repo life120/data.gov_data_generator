@@ -9,10 +9,6 @@ url = 'https://api.data.gov.sg/v1/environment/wind-direction?date=2020-10-10'
 url2 = 'https://api.data.gov.sg/v1/environment/wind-direction?date_time=2020-10-10T20%3A00%3A00&date=2020-10-10'
 
 data = requests.get(url).json()
-# df = pd.DataFrame.from_dict(data)
-
-# list1 = data['items'][0]
-# list2 = data['items'][1]
 
 ##This prints out the number of headers in the json file
 # for item in data:
@@ -37,56 +33,57 @@ for item in data['metadata']['stations']:
 # ID is S100. It is located at Woodlands Road
 # ID is S50. It is located at Clementi Road
 
-##This finds the timestamp inside 'item'
-# for item in data['items']:
-#     print('Date: ' + item['timestamp'])
-
-# {} is a dictionary
-# [] is a list
-
-##This finds the value from each item
-# items = data['items']
-# readings = items[0]['readings']
-
-# for item in readings:
-#     if item['station_id'] == 'S109':
-#         print(item['station_id'] + ' ' + str(item['value']))
-
-
-##Prints out the time stamp and the data from station_id S109
+##Prints out the time stamp and the data from station_id input
+count = 0
+station_value = ""
+station_id = ""
+station_id = input('Please indicate the station ID No: ')
 for item in data['items']:
     timeStamp = item['timestamp']
     readings = item['readings']
     for item in readings:
-        if item['station_id'] == 'S109':
-            S109Value = str(item['value'])
-        elif item['station_id'] == 'S117':
-            S117Value = str(item['value'])
-        elif item['station_id'] == 'S107':
-            S107Value = str(item['value'])
-        elif item['station_id'] == 'S107':
-            S107 = str(item['value'])
-        elif item['station_id'] == 'S43':
-            S43 = str(item['value'])
-        elif item['station_id'] == 'S108':
-            S108 = str(item['value'])
-        elif item['station_id'] == 'S44':
-            S44 = str(item['value'])
-        elif item['station_id'] == 'S106':
-            S106 = str(item['value'])
-        elif item['station_id'] == 'S60':
-            S60 = str(item['value'])
-        elif item['station_id'] == 'S115':
-            S115 = str(item['value'])
-        elif item['station_id'] == 'S24':
-            S24 = str(item['value'])
-        elif item['station_id'] == 'S104':
-            S104 = str(item['value'])
-        elif item['station_id'] == 'S100':
-            S100 = str(item['value'])
-        elif item['station_id'] == 'S50':
-            S50 = str(item['value'])
+        if item['station_id'] == station_id:
+            station_value = str(item['value'])
+    if station_value == "":
+        station_value = 0
+        count = count + 1
+    print("At {}, readings at {} = {}".format(timeStamp, station_id, station_value))
+print('There are {} empty slots for the day.'.format(str(count)))    
+
+##Prints out the time stamp and the data from station_id S109
+# for item in data['items']:
+#     timeStamp = item['timestamp']
+#     readings = item['readings']
+#     for item in readings:
+#         if item['station_id'] == 'S109':
+#             S109Value = str(item['value'])
+#         elif item['station_id'] == 'S117':
+#             S117Value = str(item['value'])
+#         elif item['station_id'] == 'S107':
+#             S107Value = str(item['value'])
+#         elif item['station_id'] == 'S107':
+#             S107 = str(item['value'])
+#         elif item['station_id'] == 'S43':
+#             S43 = str(item['value'])
+#         elif item['station_id'] == 'S108':
+#             S108 = str(item['value'])
+#         elif item['station_id'] == 'S44':
+#             S44 = str(item['value'])
+#         elif item['station_id'] == 'S106':
+#             S106 = str(item['value'])
+#         elif item['station_id'] == 'S60':
+#             S60 = str(item['value'])
+#         elif item['station_id'] == 'S115':
+#             S115 = str(item['value'])
+#         elif item['station_id'] == 'S24':
+#             S24 = str(item['value'])
+#         elif item['station_id'] == 'S104':
+#             S104 = str(item['value'])
+#         elif item['station_id'] == 'S100':
+#             S100 = str(item['value'])
+#         elif item['station_id'] == 'S50':
+#             S50 = str(item['value'])
         
-        print("At {}, readings at S109 = {}".format(timeStamp, S109Value))
+#         print("At {}, readings at S109 = {}".format(timeStamp, S109Value))
 
 print("Completed")
