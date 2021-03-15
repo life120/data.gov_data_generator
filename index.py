@@ -41,12 +41,19 @@ timeStampNoCount = 0
 with open(fileName,'w') as myFile:
     for item in data['items']:
         timeStamp = item['timestamp']
-        timeDiff = int(timeStamp[14:16]) - int(previous_timestamp[14:16]) 
-        if  timeDiff != 1 or timeDiff != -59:
-            if timeDiff > 0:
-                timeStampNoCount = timeStampNoCount + timeDiff
-            else:
-                timeStampNoCount = timeStampNoCount + (60 - abs(timeDiff))
+        currentTimeStamp = int(timeStamp[14:16])
+        
+        previousTimeStamp = int(previous_timestamp[14:16])
+        
+        if previousTimeStamp > currentTimeStamp:
+            timeDiff = 60 + currentTimeStamp - abs(previousTimeStamp)
+        else:
+            timeDiff = currentTimeStamp - previousTimeStamp
+        if timeDiff > 1:
+            timeStampNoCount = timeStampNoCount + timeDiff
+        print(timeStamp)
+        print('timeStampNoCount = {}'.format(timeStampNoCount))
+        print('CurrentTimeStamp {}, Previous Time Stamp {}, timeDiff {}'.format(currentTimeStamp, previousTimeStamp, timeDiff))
         readings = item['readings']
         for item in readings:
             if item['station_id'] == station_id:
@@ -58,8 +65,11 @@ with open(fileName,'w') as myFile:
         myFile.write("At {}, readings at {} = {}\n".format(timeStamp, station_id, station_value))
         previous_timestamp = timeStamp
         timeStampCount = timeStampCount + 1
+        timeDiff = 0
     # print('There are {} empty slots for the day.'.format(str(count))) 
     myFile.write('There are {} empty slots for the day.\nThere are {} lines.\nThere are {} missing lines'.format(str(count), str(timeStampCount), str(timeStampNoCount)))  
+    myFile.write('\n' + str(1438 - timeStampCount))
 
-
+print('There are {} empty slots for the day.\nThere are {} lines.\nThere are {} missing lines'.format(str(count), str(timeStampCount), str(timeStampNoCount)))  
+print('\n' + str(1438 - timeStampCount))
 print("Completed")
