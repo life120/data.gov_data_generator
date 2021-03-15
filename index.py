@@ -64,7 +64,8 @@ with open(fileName,'w') as myFile:
         previous_timestamp = timeStamp
         timeStampCount = timeStampCount + 1
         timeDiff = 0
-    # print('There are {} empty slots for the day.'.format(str(count))) 
+    # print('There are {} empty slots for the day.'.format(str(count)))
+    timeStampNoCount = timeStampNoCount - 1 
     myFile.write('There are {} empty slots for the day.\nThere are {} lines.\nThere are {} missing lines'.format(str(count), str(timeStampCount), str(timeStampNoCount)))  
     myFile.write('\n' + str(1438 - timeStampCount))
 
