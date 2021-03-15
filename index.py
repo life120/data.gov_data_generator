@@ -19,6 +19,12 @@ url2 = 'https://api.data.gov.sg/v1/environment/wind-direction?date_time=2020-10-
 # for item in data['metadata']['stations']:
 #     print('ID is ' + str(item['id']) + '. It is located at ' + item['name'])
 
+def timeConvert(timeStamp):
+    min = int(timeStamp[3:])
+    hr = int(timeStamp[0:2])
+    time = 60*hr + min
+    return time
+
 ##Prints out the time stamp and the data from station_id input
 count = 0
 station_value = ""
@@ -41,19 +47,11 @@ timeStampNoCount = 0
 with open(fileName,'w') as myFile:
     for item in data['items']:
         timeStamp = item['timestamp']
-        currentTimeStamp = int(timeStamp[14:16])
-        
-        previousTimeStamp = int(previous_timestamp[14:16])
-        
-        if previousTimeStamp > currentTimeStamp:
-            timeDiff = 60 + currentTimeStamp - abs(previousTimeStamp)
-        else:
-            timeDiff = currentTimeStamp - previousTimeStamp
+        currentTimeStamp = timeConvert(timeStamp[11:16])
+        previousTimeStamp = timeConvert(previous_timestamp[11:16])
+        timeDiff = currentTimeStamp - previousTimeStamp
         if timeDiff > 1:
-            timeStampNoCount = timeStampNoCount + timeDiff
-        print(timeStamp)
-        print('timeStampNoCount = {}'.format(timeStampNoCount))
-        print('CurrentTimeStamp {}, Previous Time Stamp {}, timeDiff {}'.format(currentTimeStamp, previousTimeStamp, timeDiff))
+            timeStampNoCount = timeStampNoCount + timeDiff - 1
         readings = item['readings']
         for item in readings:
             if item['station_id'] == station_id:
