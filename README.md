@@ -1,2 +1,2 @@
 # data.gov_data_generator
-Takes json data.gov.sg and displays them in readable charts for easy viewing and analysis
+Takes json wind direction data from data.gov.sg and saves them into a txt file based on the station_id for any month of the year from 2016 to present
