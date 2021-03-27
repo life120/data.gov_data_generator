@@ -28,12 +28,16 @@ def newTimeStamp(currentTimeStamp, time):
         tempTimeStamp = part1 + part2 + newMinStr + part4
         return tempTimeStamp
     elif newMin > 59:
-        newMinStr = ':0' + str(newMin - 60)
-        newHr = int(part2) + 1
+        newMinValue = newMin - 60*(newMin//60)
+        if newMinValue < 10:
+            newMinStr = ':0' + str(newMinValue)
+        elif newMinValue > 9:
+            newMinStr = ':' + str(newMinValue)
+        newHr = int(part2) + newMin//60
         if newHr < 10:
             newHrStr = '0' + str(newHr)
         else:
-            newHrStr = str(newHr)
+            newHrStr = str(newHr) 
         tempTimeStamp = part1 + newHrStr + newMinStr + part4
         return tempTimeStamp
 
@@ -51,7 +55,7 @@ def generateDayTxtFile(date,station_id):
     station_id = station_id
     date = date
     first_timestamp = "YYYY-MM-DDT00:00:00+08:00"
-    # last_timestamp = "23:59:00"
+    last_timing = "YYYY-MM-DDT23:59:00+08:00"
     missing_timestamp = []
     url = 'https://api.data.gov.sg/v1/environment/wind-direction?date='
     timeStampCount = 0
@@ -98,13 +102,21 @@ def generateDayTxtFile(date,station_id):
                 previous_timestamp = timeStamp
                 timeStampCount = timeStampCount + 1
                 timeDiff = 0
+        lastDataTiming = timeStamp
+        if lastDataTiming[11:16] != last_timing[11:16]:
+            previousTimeStamp = timeConvert(lastDataTiming[11:16])
+            current_timing = timeConvert(last_timing[11:16])
+            timeDiff = current_timing - previousTimeStamp + 1
+            for time in range(1,timeDiff):
+                tempTimeStamp = newTimeStamp(previous_timestamp, time)
+                myFile.write(tempTimeStamp + ";" + station_value + "\n")
 
         myFile.write('There are {} slots for the day.\nThere are {} lines.\nThere are {} missing lines'.format(str(count), str(timeStampCount), str(timeStampNoCount)))  
         myFile.write('\n' + str(1438 - timeStampCount))
         myFile.write('\nTimestamp missing in the list are listed below:\n')
         for item in missing_timestamp:
             myFile.write(item + "\n")
-
+    timeStamp = ""
     print('There are {} slots for the day.\nThere are {} lines in the document.\nThere are {} missing lines'.format(str(count), str(timeStampCount), str(timeStampNoCount)))  
     print('\n' + str(1438 - timeStampCount))
     print("Completed")
@@ -130,6 +142,25 @@ def loadStationID():
     return station_id
 
 def generateMonthTxtFile(date,station_id):
+    year = int(month_input[0:4])
+    yearStr = str(year)
+    month = int(month_input[5:])
+    if month < 10:
+        monthStr = "0" + str(month)
+    else:
+        monthStr = str(month)
+
+    month_range = monthrange(year, month)
+    total_days = month_range[1]
+    for i in range(total_days):
+        i = i + 1
+        if i < 10:
+            dayStr = "0" + str(i)
+        else:
+            dayStr = str(i)
+        date = yearStr + "-" + monthStr + "-" + dayStr
+        generateDayTxtFile(date, station_id)
+        print
     return None
 
 def dataTypeChecker():
@@ -145,7 +176,7 @@ if dataType == "D":
     generateDayTxtFile(date,station_id)
 elif dataType == "M":
     month_input = input("Please indicate the month of interest(YYYY-MM): ")
-
+    generateMonthTxtFile(month_input, station_id)
 else:
     print('Please re-run the software and key either D (Daily) or M (Monthly)')
 
