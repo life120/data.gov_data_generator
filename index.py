@@ -172,8 +172,8 @@ def dataTypeChecker():
 station_id = loadStationID()
 dataType = dataTypeChecker()
 if dataType == "D":
-    date = input("Please indicate the date that you want to download the wind direction data from(YYYY-MM-DD): ")
-    generateDayTxtFile(date,station_id)
+    day_input = input("Please indicate the date that you want to download the wind direction data from(YYYY-MM-DD): ")
+    generateDayTxtFile(day_input,station_id)
 elif dataType == "M":
     month_input = input("Please indicate the month of interest(YYYY-MM): ")
     generateMonthTxtFile(month_input, station_id)
