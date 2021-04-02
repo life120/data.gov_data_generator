@@ -49,7 +49,7 @@ def firstTimeStamp(currentTimeStamp):
     tempTimeStamp = part1 + part2 + newMinStr + part4
     return tempTimeStamp
 
-def generateDayTxtFile(date,station_id):
+def generateTxtFile(date,station_id):
     count = 0
     station_value = ""
     station_id = station_id
@@ -159,7 +159,7 @@ def generateMonthTxtFile(date,station_id):
         else:
             dayStr = str(i)
         date = yearStr + "-" + monthStr + "-" + dayStr
-        generateDayTxtFile(date, station_id)
+        generateTxtFile(date, station_id)
         print
     return None
 
@@ -174,7 +174,7 @@ dataType = dataTypeChecker()
 if dataType == "D":
     day_input = input("Please indicate the date that you want to download the wind direction data from(YYYY-MM-DD): ")
     try:
-        generateDayTxtFile(day_input,station_id)
+        generateTxtFile(day_input,station_id)
         print('Data prepared and downloaded. Thank you and enjoy!')
     except:
         print('There seems to be something wrong on {}. Please ensure the date is from 2016 onwards. Thank you.'.format(day_input))
