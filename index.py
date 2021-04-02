@@ -173,38 +173,13 @@ station_id = loadStationID()
 dataType = dataTypeChecker()
 if dataType == "D":
     day_input = input("Please indicate the date that you want to download the wind direction data from(YYYY-MM-DD): ")
-    generateDayTxtFile(day_input,station_id)
+    try:
+        generateDayTxtFile(day_input,station_id)
+        print('Data prepared and downloaded. Thank you and enjoy!')
+    except:
+        print('There seems to be something wrong on {}. Please ensure the date is from 2016 onwards. Thank you.'.format(day_input))
 elif dataType == "M":
     month_input = input("Please indicate the month of interest(YYYY-MM): ")
     generateMonthTxtFile(month_input, station_id)
 else:
     print('Please re-run the software and key either D (Daily) or M (Monthly)')
-
-
-
-# if dataType == "D":
-#     date = input("Please indicate the date that you want to download the wind direction data from(YYYY-MM-DD): ")
-#     generateDayTxtFile(date)
-# elif dataType == "M":
-#     month_input = input("Please indicate the month and year that you want to download from? (YYYY-MM): ")
-#     station_id = input("Please indicate the station id: ")
-#     year = int(month_input[0:4])
-#     yearStr = str(year)
-#     month = int(month_input[5:])
-#     if month < 10:
-#         monthStr = "0" + str(month)
-#     else:
-#         monthStr = str(month)
-#     month_range = monthrange(year, month)
-#     total_days = month_range[1]
-#     for i in range(total_days):
-#         i = i + 1
-#         if i < 10:
-#             dayStr = "0" + str(i)
-#         else:
-#             dayStr = str(i)
-#         date = yearStr + "-" + monthStr + "-" + dayStr
-#         generateMonthTxtFile(date,station_id)
-        
-        
-
