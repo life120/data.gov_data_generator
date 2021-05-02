@@ -6,11 +6,13 @@ import requests
 from calendar import monthrange
 import time
 
+
 def timeConvert(timeStamp):
     min = int(timeStamp[3:])
     hr = int(timeStamp[0:2])
     time = 60*hr + min
     return time
+
 
 def newTimeStamp(currentTimeStamp, time):
     part1 = currentTimeStamp[:11]
@@ -18,7 +20,7 @@ def newTimeStamp(currentTimeStamp, time):
     part4 = currentTimeStamp[16:]
     oldMin = int(currentTimeStamp[14:16])
     newMin = oldMin + time
-    
+
     if newMin < 10:
         newMinStr = ':0' + str(newMin)
         tempTimeStamp = part1 + part2 + newMinStr + part4
@@ -37,9 +39,10 @@ def newTimeStamp(currentTimeStamp, time):
         if newHr < 10:
             newHrStr = '0' + str(newHr)
         else:
-            newHrStr = str(newHr) 
+            newHrStr = str(newHr)
         tempTimeStamp = part1 + newHrStr + newMinStr + part4
         return tempTimeStamp
+
 
 def firstTimeStamp(currentTimeStamp):
     part1 = currentTimeStamp[:11]
@@ -49,7 +52,8 @@ def firstTimeStamp(currentTimeStamp):
     tempTimeStamp = part1 + part2 + newMinStr + part4
     return tempTimeStamp
 
-def generateTxtFile(date,station_id):
+
+def generateTxtFile(date, station_id):
     count = 0
     station_value = ""
     station_id = station_id
@@ -63,10 +67,10 @@ def generateTxtFile(date,station_id):
     url = url + date
     # puts the data into a variable
     data = requests.get(url).json()
-    
-    fileName = str(date) + '_'+ station_id +'.txt'
+
+    fileName = str(date) + '_' + station_id + '.txt'
     previous_timestamp = first_timestamp
-    with open(fileName,'w') as myFile:
+    with open(fileName, 'w') as myFile:
         for item in data['items']:
             timeStamp = item["timestamp"]
             readings = item['readings']
@@ -90,14 +94,15 @@ def generateTxtFile(date,station_id):
                         station_value = str(item['value'])
                 if station_value == "":
                     station_value = str(0)
-                
+
                 if timeDiff > 1:
                     timeStampNoCount = timeStampNoCount + timeDiff - 1
                     missing_timestamp.append(timeStamp)
-                    for time in range(1,timeDiff):
+                    for time in range(1, timeDiff):
                         tempTimeStamp = newTimeStamp(previous_timestamp, time)
-                        myFile.write(tempTimeStamp + ";" + station_value + "\n")
-                
+                        myFile.write(tempTimeStamp + ";" +
+                                     station_value + "\n")
+
                 myFile.write(timeStamp + ";" + station_value + "\n")
                 previous_timestamp = timeStamp
                 timeStampCount = timeStampCount + 1
@@ -107,41 +112,47 @@ def generateTxtFile(date,station_id):
             previousTimeStamp = timeConvert(lastDataTiming[11:16])
             current_timing = timeConvert(last_timing[11:16])
             timeDiff = current_timing - previousTimeStamp + 1
-            for time in range(1,timeDiff):
+            for time in range(1, timeDiff):
                 tempTimeStamp = newTimeStamp(previous_timestamp, time)
                 myFile.write(tempTimeStamp + ";" + station_value + "\n")
 
-        myFile.write('There are {} slots for the day.\nThere are {} lines.\nThere are {} missing lines'.format(str(count), str(timeStampCount), str(timeStampNoCount)))  
+        myFile.write('There are {} slots for the day.\nThere are {} lines.\nThere are {} missing lines'.format(
+            str(count), str(timeStampCount), str(timeStampNoCount)))
         myFile.write('\n' + str(1438 - timeStampCount))
         myFile.write('\nTimestamp missing in the list are listed below:\n')
         for item in missing_timestamp:
             myFile.write(item + "\n")
     timeStamp = ""
-    print('There are {} slots for the day.\nThere are {} lines in the document.\nThere are {} missing lines'.format(str(count), str(timeStampCount), str(timeStampNoCount)))  
+    print('There are {} slots for the day.\nThere are {} lines in the document.\nThere are {} missing lines'.format(
+        str(count), str(timeStampCount), str(timeStampNoCount)))
     print('\n' + str(1438 - timeStampCount))
     print("Completed")
     print(missing_timestamp)
-##Prints out the time stamp and the data from station_id input
+# Prints out the time stamp and the data from station_id input
+
 
 def loadStationID():
     data = open("station.json")
     data = json.load(data)
-    station_list = []
+    station_list = {}
     station_id = ""
     for item in data['metadata']['stations']:
         station_list.append(item['id'])
         print('Station ' + item['id'] + ' is located at ' + item['name'])
-    
+
     while station_id == "":
-        station_id = input("Please indicate the station id of interest(e.g. S109): ")
+        station_id = input(
+            "Please indicate the station id of interest(e.g. S109): ")
         if station_id in station_list:
             station_id = station_id
         else:
-            print("Please choose a station from the list provided. If you wish to exit, please press Ctrl+c")
+            print(
+                "Please choose a station from the list provided. If you wish to exit, please press Ctrl+c")
             station_id = ""
     return station_id
 
-def generateMonthTxtFile(date,station_id):
+
+def generateMonthTxtFile(date, station_id):
     year = int(month_input[0:4])
     yearStr = str(year)
     month = int(month_input[5:])
@@ -163,18 +174,23 @@ def generateMonthTxtFile(date,station_id):
         print
     return None
 
+
 def dataTypeChecker():
-    dataType = input("Please indicate if you want Daily or Monthly data? (D = Daily; M = Monthly): ")
+    dataType = input(
+        "Please indicate if you want Daily or Monthly data? (D = Daily; M = Monthly): ")
     while dataType != "D" and dataType != "M":
-        dataType = input("The ID is not one of the station. Please indicate if you want Daily or Monthly data? (D = Daily; M = Monthly): ")
+        dataType = input(
+            "The ID is not one of the station. Please indicate if you want Daily or Monthly data? (D = Daily; M = Monthly): ")
     return dataType
+
 
 station_id = loadStationID()
 dataType = dataTypeChecker()
 if dataType == "D":
-    day_input = input("Please indicate the date that you want to download the wind direction data from(YYYY-MM-DD): ")
+    day_input = input(
+        "Please indicate the date that you want to download the wind direction data from(YYYY-MM-DD): ")
     try:
-        generateTxtFile(day_input,station_id)
+        generateTxtFile(day_input, station_id)
         print('Data prepared and downloaded. Thank you and enjoy!')
     except:
         print('There seems to be something wrong on {}. Please ensure the date is from 2016 onwards. Thank you.'.format(day_input))
