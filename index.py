@@ -62,7 +62,7 @@ def generateTxtFile(date,station_id):
     timeStampNoCount = 0
     url = url + date
     # puts the data into a variable
-    data = requests.get(url).json()
+    data = requests.get(url).json() # https request pull from a RESTful API
     
     fileName = str(date) + '_'+ station_id +'.txt'
     previous_timestamp = first_timestamp
